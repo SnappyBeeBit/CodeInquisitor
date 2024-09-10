@@ -36,17 +36,22 @@ namespace SourceGeneration
         {
             var compilation = tuple.Left;
             var nodes = tuple.Right;
-
+            int counter = 0;
             foreach (var node in nodes)
             {
+              
                 var conditionalExpressionSyntax =  node as ConditionalExpressionSyntax;
                 var x = conditionalExpressionSyntax.GetText();
-                if(x.Lines.Count > 2)
+                bool lineViolation = x.Lines.Count > 2;
+                bool nestedViolation = conditionalExpressionSyntax.DescendantNodes().Where(i => i as ConditionalExpressionSyntax is ConditionalExpressionSyntax).Count() >= 3;
+                if (nestedViolation)
                 {
                     Console.WriteLine("LOCATED");
-                    context.AddSource("Vioalation".AddGeneratorSuffix(), $"/////Ternary Violation: {conditionalExpressionSyntax.GetLocation().GetLineSpan().ToString()}");
+                    context.AddSource(counter.ToString() + " Vioalation".AddGeneratorSuffix(), $"/////Ternary Violation: {conditionalExpressionSyntax.GetLocation().GetLineSpan().ToString()}");
                 }
+                counter++;
             }
+
         }
     }
 }
