@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SourceGeneration
+namespace SourceGeneration.Helpers
 {
     public static class GeneratorHelper
     {

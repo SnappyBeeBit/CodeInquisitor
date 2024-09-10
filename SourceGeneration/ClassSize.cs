@@ -2,15 +2,15 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceGeneration.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace SourceGeneration
 {
     [Generator]
-    public class MyGenerator : CodeInquisitor
+    internal class ClassSize : CodeInquisitor
     {
         public override void Initialize(IncrementalGeneratorInitializationContext context)
         {
@@ -19,26 +19,35 @@ namespace SourceGeneration
         protected override bool Filter(SyntaxNode node, CancellationToken token)
         {
             return node is ClassDeclarationSyntax;
-           
         }
+      
         protected override object ConvertNode(GeneratorSyntaxContext context, CancellationToken token)
         {
-            return (ClassDeclarationSyntax)context.Node;
+            return context.Node;
         }
         protected override void Execute(SourceProductionContext context, (Compilation compilation, ImmutableArray<object> nodes) tuple)
         {
             ExecuteChecks<ClassDeclarationSyntax> executeChecks = ExecuteHelper<ClassDeclarationSyntax>.RunChecks(tuple);
-            if(executeChecks.ToLeave) return;
-
-            var compilation = tuple.compilation;
-           
-            foreach (ClassDeclarationSyntax syntaxNode in executeChecks.ConvertedNodes)
+            if (executeChecks.ToLeave)
             {
-                var namedTypedSymbol = compilation.GetSemanticModel(syntaxNode.SyntaxTree).GetDeclaredSymbol(syntaxNode) as INamedTypeSymbol;             
-                context.AddSource(namedTypedSymbol.MetadataName.AddGeneratorSuffix(), "/////Hello?");
+                return;
+            }
+            var compilation = tuple.compilation;
+            foreach (ClassDeclarationSyntax node in executeChecks.ConvertedNodes)
+            {
+                if (node.GetText().Lines.Count > 1000)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(ClassSizeDDs.ClassSizeViolation,  node.GetLocation(), ClassSizeDDs.CSDescription));
+                }
             }
         }
-        
-      
+        public static class ClassSizeDDs
+        {
+            public static DiagnosticDescriptor ClassSizeViolation = new("CI_ClassSize", "Class Size Error", "'{0}'", "", DiagnosticSeverity.Error, true);
+
+            public static string CSDescription = "Class is over 1000, break it down into smaller parts";
+        }
+
+
     }
 }
