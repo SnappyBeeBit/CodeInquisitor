@@ -45,7 +45,7 @@ namespace SourceGeneration
         {
             public static DiagnosticDescriptor ClassSizeViolation = new("CI_ClassSize", "Class Size Error", "'{0}'", "", DiagnosticSeverity.Error, true);
 
-            public static string CSDescription = "Class is over 1000, break it down into smaller parts";
+            public static string CSDescription = "Class is over 1000 lines, break it down into smaller parts";
         }
 
 
