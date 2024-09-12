@@ -30,14 +30,8 @@ namespace SourceGeneration
         {
             ExecuteChecks<ConditionalExpressionSyntax> executeChecks = ExecuteHelper<ConditionalExpressionSyntax>.RunChecks(tuple);
             if (executeChecks.ToLeave) return;
-
-            var compilation = tuple.compilation;
-            int count = 0;
             foreach (ConditionalExpressionSyntax node in executeChecks.ConvertedNodes)
             {
-
-                context.AddSource($"{count} output.g.cs", $"{node.DescendantNodes().Count()}");
-
                 var x = node.GetText();
                 bool lineViolation = x.Lines.Count > 2;
                 bool nestedViolation = node.DescendantNodes().Where(i => i as ConditionalExpressionSyntax is not null).Count() >= 3;
@@ -48,8 +42,7 @@ namespace SourceGeneration
                 if (nestedViolation)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(TernaryDDs.NestedTernaryViolation, node.GetLocation(), TernaryDDs.NTVDescription));
-                }
-                count++;    
+                } 
             }
         }
     }

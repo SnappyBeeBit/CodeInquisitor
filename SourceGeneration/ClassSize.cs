@@ -32,11 +32,12 @@ namespace SourceGeneration
             {
                 return;
             }
-            var compilation = tuple.compilation;
             foreach (ClassDeclarationSyntax node in executeChecks.ConvertedNodes)
             {
+              
                 if (node.GetText().Lines.Count > 1000)
                 {
+                   
                     context.ReportDiagnostic(Diagnostic.Create(ClassSizeDDs.ClassSizeViolation,  node.GetLocation(), ClassSizeDDs.CSDescription));
                 }
             }

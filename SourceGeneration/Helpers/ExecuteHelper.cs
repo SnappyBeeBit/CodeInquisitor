@@ -20,9 +20,9 @@ namespace SourceGeneration.Helpers
         {
             if(nodes.IsDefaultOrEmpty)
             {
-                return new List<T>();
+                return [];
             }
-            List<T> result = new List<T>();
+            List<T> result = [];
             foreach (var node in nodes)
             {
                 result.Add((T)node);
