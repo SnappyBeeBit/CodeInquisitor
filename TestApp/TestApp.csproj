@@ -8,7 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="code_inquisitor_settings.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+  <ItemGroup>
+		<AdditionalFiles Include="code_inquisitor_settings.csv" />
   </ItemGroup>
 
 </Project>

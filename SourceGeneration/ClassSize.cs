@@ -27,7 +27,7 @@ namespace SourceGeneration
         }
         protected override void Execute(SourceProductionContext context, (Compilation compilation, ImmutableArray<object> nodes) tuple)
         {
-            ExecuteChecks<ClassDeclarationSyntax> executeChecks = ExecuteHelper<ClassDeclarationSyntax>.RunChecks(tuple);
+			ExecuteChecks<ClassDeclarationSyntax> executeChecks = ExecuteHelper<ClassDeclarationSyntax>.RunChecks(tuple);
             if (executeChecks.ToLeave)
             {
                 return;
@@ -35,20 +35,18 @@ namespace SourceGeneration
             foreach (ClassDeclarationSyntax node in executeChecks.ConvertedNodes)
             {
               
-                if (node.GetText().Lines.Count > 1000)
+                if (node.GetText().Lines.Count > Settings.ClassSize)
                 {
-                   
-                    context.ReportDiagnostic(Diagnostic.Create(ClassSizeDDs.ClassSizeViolation,  node.GetLocation(), ClassSizeDDs.CSDescription));
+
+					string CSDescription = $"Class is over {Settings.ClassSize} lines, break it down into smaller parts";
+		            context.ReportDiagnostic(Diagnostic.Create(ClassSizeDDs.ClassSizeViolation,  node.GetLocation(), CSDescription));
                 }
             }
         }
         public static class ClassSizeDDs
         {
             public static DiagnosticDescriptor ClassSizeViolation = new("CI_ClassSize", "Class Size Error", "'{0}'", "", DiagnosticSeverity.Error, true);
-
-            public static string CSDescription = "Class is over 1000 lines, break it down into smaller parts";
+           
         }
-
-
     }
 }

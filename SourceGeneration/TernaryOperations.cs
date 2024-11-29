@@ -20,7 +20,7 @@ namespace SourceGeneration
         }
         protected override bool Filter(SyntaxNode node, CancellationToken token)
         {
-            return node is ConditionalExpressionSyntax expressionSyntax && (expressionSyntax.DescendantNodes().Count() > (3 * 3) || expressionSyntax.GetText().Lines.Count > 1);
+            return node is ConditionalExpressionSyntax;
         }
         protected override object ConvertNode(GeneratorSyntaxContext context, CancellationToken token)
         {
@@ -33,8 +33,8 @@ namespace SourceGeneration
             foreach (ConditionalExpressionSyntax node in executeChecks.ConvertedNodes)
             {
                 var x = node.GetText();
-                bool lineViolation = x.Lines.Count > 2;
-                bool nestedViolation = node.DescendantNodes().Where(i => i as ConditionalExpressionSyntax is not null).Count() >= 3;
+                bool lineViolation = x.Lines.Count > Settings.TernaryLineCount;
+                bool nestedViolation = node.DescendantNodes().Where(i => i as ConditionalExpressionSyntax is not null).Count() >= Settings.TernaryDensity;
                 if(lineViolation)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(TernaryDDs.TooManyLinesTernaryViolation, node.GetLocation(), TernaryDDs.TMLVDescription));

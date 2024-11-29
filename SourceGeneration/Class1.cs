@@ -35,7 +35,7 @@ namespace SourceGeneration
             foreach (ClassDeclarationSyntax syntaxNode in executeChecks.ConvertedNodes)
             {
                 var namedTypedSymbol = compilation.GetSemanticModel(syntaxNode.SyntaxTree).GetDeclaredSymbol(syntaxNode) as INamedTypeSymbol;             
-                context.AddSource(namedTypedSymbol.MetadataName.AddGeneratorSuffix(), "/////Hello?");
+                context.AddSource(namedTypedSymbol.MetadataName.AddGeneratorSuffix(), $"// Return Size {Settings.ReturnSize} \n //Ternary Density {Settings.TernaryDensity} \n //Ternary Line Count {Settings.TernaryLineCount} \n //Class Size {Settings.ClassSize}");
             }
         }
         

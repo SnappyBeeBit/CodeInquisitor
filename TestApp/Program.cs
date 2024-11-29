@@ -7,10 +7,11 @@ Console.WriteLine(myStruct.Id);
 class MyClass
 {
     public int Id { get; set; }
-    public static string DoTheThing()
+    public static int DoTheThing()
     {
-        return (true ? "" : true && true || false ? "a" : 
-            false && false ? "true" : "hello");
+        return 10 + 10
+            + 10;
+
     }
 }
 public struct MyStruct

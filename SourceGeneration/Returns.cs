@@ -27,23 +27,19 @@ namespace SourceGeneration
             ExecuteChecks<ReturnStatementSyntax> executeChecks = ExecuteHelper<ReturnStatementSyntax>.RunChecks(tuple);
             if(executeChecks.ToLeave)
                 return;
-            
+
             foreach(ReturnStatementSyntax node in executeChecks.ConvertedNodes)
             {
-               if(node.GetText().Lines.Count > 3)
+               if(node.GetText().Lines.Count > Settings.ReturnSize)
                {
-                    context.ReportDiagnostic(Diagnostic.Create(ReturnStatementDDs.ReturnStatementLineCountViolation, node.GetLocation(), ReturnStatementDDs.RSLCViolation));
+					string RSLCViolation = $"Return Statement is more than {Settings.ReturnSize} lines long, consider doing operations beforehand";
+					context.ReportDiagnostic(Diagnostic.Create(ReturnStatementDDs.ReturnStatementLineCountViolation, node.GetLocation(), RSLCViolation));
                }
             }
         }
         public static class ReturnStatementDDs
         {
-            public static DiagnosticDescriptor ReturnStatementLineCountViolation = new("CI_Return", "Return Statement Line Count Error", "'{0}'", "", DiagnosticSeverity.Error, true);
-
-            public static string RSLCViolation = "Return Statement is more than 5 lines long, consider doing operations beforehand";
-
-        }
-
-
+			public static DiagnosticDescriptor ReturnStatementLineCountViolation = new("CI_Return", "Return Statement Line Count Error", "'{0}'", "", DiagnosticSeverity.Error, true);
+		}
     }
 }
